@@ -1,10 +1,19 @@
 import React, { useReducer, useEffect } from "react";
 import axios from "axios";
 import Select from "react-select";
-import { reducer, LOADING_STATE, SET_DATA } from "./reducer";
+import { reducer, LOADING_STATE, SET_DATA, SET_TRIP_DATA } from "./reducer";
+
 const initialState = {
   data: undefined,
   loadingState: "loading",
+};
+const getOptions = (arr) => {
+  const options = arr.map((item) => ({
+    label: item.name,
+    value: item.url,
+  }));
+
+  return options;
 };
 
 function BookTrip() {
@@ -55,12 +64,69 @@ function BookTrip() {
 
   return (
     <div>
-      <h1>Book trip</h1>
+      <h1 className="text-center mb-8 mt-6 text-2xl">Book trip</h1>
       {state.loadingState === "loading" && <h1>Loading data...</h1>}
-      {state.loadingState === "success" && (
+      {state.showTripDetail && (
         <div>
-          {" "}
-          <h1>Form here</h1>{" "}
+          <h3>People: {state.tripData.people}</h3>
+        </div>
+      )}
+      {state.loadingState === "success" && (
+        <div className="flex justify-center w-full">
+          <div className=" w-full max-w-[600px]">
+            <label className="mb-2">User</label>
+            <Select
+              className="mb-8"
+              defaultValue={getOptions(state.data.people)[0]}
+              options={getOptions(state.data.people)}
+              onChange={(option) => {
+                dispatch({
+                  type: SET_TRIP_DATA,
+                  payload: {
+                    ...state.tripData,
+                    people: option.label,
+                  },
+                });
+              }}
+            />
+
+            <label className="mb-2">Departure planet</label>
+            <Select
+              className="mb-8"
+              defaultValue={getOptions(state.data.planet)[0]}
+              options={state.data.planet.map((item) => ({
+                label: item.name,
+                value: item.url,
+              }))}
+            />
+
+            <label className="mb-2">Destination planet</label>
+            <Select
+              className="mb-8"
+              defaultValue={getOptions(state.data.planet)[0]}
+              options={state.data.planet.map((item) => ({
+                label: item.name,
+                value: item.url,
+              }))}
+            />
+
+            <Select
+              className="mb-8"
+              defaultValue={getOptions(state.data.species)[0]}
+              options={getOptions(state.data.species)}
+            />
+
+            <button
+              onClick={() => {}}
+              className={`text-xl text-white bg-blue-600 w-full rounded whitespace-nowrap py-2`}
+            >
+              Confirm
+            </button>
+
+            {/* People */}
+            {/* <Select />
+          <Select /> */}
+          </div>
         </div>
       )}
       {/* <Select /> */}
