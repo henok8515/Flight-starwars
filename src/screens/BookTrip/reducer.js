@@ -1,5 +1,6 @@
 export const SET_DATA = "SET_DATA";
 export const LOADING_STATE = "LOADING_STATE";
+export const SET_TRIP_DATA = "SET_TRIP_DATA";
 
 export const reducer = (state, action) => {
   const { type, payload } = action;
@@ -14,6 +15,11 @@ export const reducer = (state, action) => {
       return {
         ...state,
         loadingState: payload,
+      };
+    case SET_TRIP_DATA:
+      return {
+        ...state,
+        tripData: payload,
       };
     default:
       throw new Error(`Unhandled action type: ${type}`);

@@ -11,8 +11,9 @@
     "react-select": "^5.3.2"
   },
   "scripts": {
-    "start": "react-scripts start && npx tailwindcss -i ./src/index.css -o ./dist/output.css --watch",
-    "build": "react-scripts build && npx tailwindcss -i ./src/index.css -o ./dist/output.css ",
+    "tailwind:watch" :  "npx tailwindcss -i ./src/index.css -o ./src/output.css --watch",
+    "start": "react-scripts start && tailwind:watch",
+    "build": "react-scripts build && tailwind:watch",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
