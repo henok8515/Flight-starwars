@@ -2,10 +2,10 @@ import React, { useReducer, useEffect } from "react";
 import axios from "axios";
 import Select from "react-select";
 import { reducer, LOADING_STATE, SET_DATA, SET_TRIP_DATA } from "./reducer";
-
 const initialState = {
   data: undefined,
   loadingState: "loading",
+  // showTripDetail: false,
 };
 const getOptions = (arr) => {
   const options = arr.map((item) => ({
@@ -68,7 +68,7 @@ function BookTrip() {
       {state.loadingState === "loading" && <h1>Loading data...</h1>}
       {state.showTripDetail && (
         <div>
-          <h3>People: {state.tripData.people}</h3>
+          <h1>{state.tripData.people}</h1>
         </div>
       )}
       {state.loadingState === "success" && (
@@ -92,6 +92,15 @@ function BookTrip() {
 
             <label className="mb-2">Departure planet</label>
             <Select
+              onChange={(option) => {
+                dispatch({
+                  type: SET_TRIP_DATA,
+                  payload: {
+                    ...state.tripData,
+                    planet: option.label,
+                  },
+                });
+              }}
               className="mb-8"
               defaultValue={getOptions(state.data.planet)[0]}
               options={state.data.planet.map((item) => ({
@@ -102,6 +111,15 @@ function BookTrip() {
 
             <label className="mb-2">Destination planet</label>
             <Select
+              onChange={(option) => {
+                dispatch({
+                  type: SET_TRIP_DATA,
+                  payload: {
+                    ...state.tripData,
+                    planet: option.label,
+                  },
+                });
+              }}
               className="mb-8"
               defaultValue={getOptions(state.data.planet)[0]}
               options={state.data.planet.map((item) => ({
@@ -111,17 +129,34 @@ function BookTrip() {
             />
 
             <Select
+              onChange={(option) => {
+                dispatch({
+                  type: SET_TRIP_DATA,
+                  payload: {
+                    ...state.tripData,
+                    species: option.label,
+                  },
+                });
+              }}
               className="mb-8"
               defaultValue={getOptions(state.data.species)[0]}
               options={getOptions(state.data.species)}
             />
-
+            <div></div>
             <button
-              onClick={() => {}}
+              onClick={() => !state.showTripDetail}
               className={`text-xl text-white bg-blue-600 w-full rounded whitespace-nowrap py-2`}
             >
               Confirm
             </button>
+            {state.showTripDetail ? null : (
+              <div>
+                <h1>People: {state.tripData.people}</h1>
+                <h1>Departure: {state.tripData.planet}</h1>
+                <h1>destination: {state.tripData.planet}</h1>
+                <h1>species: {state.tripData.species}</h1>
+              </div>
+            )}
 
             {/* People */}
             {/* <Select />
