@@ -1,7 +1,7 @@
 export const SET_DATA = "SET_DATA";
 export const LOADING_STATE = "LOADING_STATE";
 export const SET_TRIP_DATA = "SET_TRIP_DATA";
-
+export const DISPLAY_SUMMURY = "DISPLAY_SUMMURY";
 export const reducer = (state, action) => {
   const { type, payload } = action;
   switch (type) {
@@ -20,6 +20,12 @@ export const reducer = (state, action) => {
       return {
         ...state,
         tripData: payload,
+      };
+    case DISPLAY_SUMMURY:
+      return {
+        ...state,
+        toogle: payload,
+        default: false,
       };
     default:
       throw new Error(`Unhandled action type: ${type}`);

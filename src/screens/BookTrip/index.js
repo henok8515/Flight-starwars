@@ -6,6 +6,7 @@ import { reducer, LOADING_STATE, SET_DATA, SET_TRIP_DATA } from "./reducer";
 const initialState = {
   data: undefined,
   loadingState: "loading",
+  tripData: {},
 };
 const getOptions = (arr) => {
   const options = arr.map((item) => ({
@@ -34,7 +35,7 @@ function BookTrip() {
       const resPlanet = await axios.get("https://swapi.dev/api/planets");
       const resSpecies = await axios.get("https://swapi.dev/api/species");
       const resVehicles = await axios.get("https://swapi.dev/api/vehicles");
-
+      const resDesPlanet = await axios.get("https://swapi.dev/api/planets");
       if (resPeople.data) {
         data.people = resPeople.data.results;
       }
@@ -47,7 +48,9 @@ function BookTrip() {
       if (resSpecies.data) {
         data.species = resSpecies.data.results;
       }
-      console.log(data);
+      if (resDesPlanet.data) {
+        data.desPlanet = resDesPlanet.data.results;
+      }
 
       dispatch({
         type: SET_DATA,
@@ -60,8 +63,16 @@ function BookTrip() {
     }
   };
 
-  console.log("State: ", state);
-
+  const handelChange = (option, key) => {
+    dispatch({
+      type: SET_TRIP_DATA,
+      payload: {
+        ...state.tripData,
+        [key]: option.label,
+      },
+    });
+  };
+  console.log(state.tripData);
   return (
     <div>
       <h1 className="text-center mb-8 mt-6 text-2xl">Book trip</h1>
@@ -79,57 +90,60 @@ function BookTrip() {
               className="mb-8"
               defaultValue={getOptions(state.data.people)[0]}
               options={getOptions(state.data.people)}
+              onChange={(option) => handelChange(option, "people")}
+              value={getOptions(state.data.people).find(
+                (item) => item.label === state.data.tripData?.people
+              )}
+            />
+
+            <label className="mb-2">Departure planet</label>
+            <Select
+              onChange={(option) => handelChange(option, "planet")}
+              className="mb-8"
+              defaultValue={getOptions(state.data?.planet)[0]}
+              options={state.data.planet.map((item) => ({
+                label: item.name,
+                value: item.url,
+              }))}
+              value={getOptions(state.data.planet).find(
+                (itme) => itme.label === state.tripData.planet
+              )}
+            />
+
+            <label className="mb-2">Destination planet</label>
+            <Select
+              onChange={(option) => handelChange()}
+              className="mb-8"
+              defaultValue={getOptions(state.data.desPlanet)[0]}
+              options={state.data.desPlanet.map((item) => ({
+                label: item.name,
+                value: item.url,
+              }))}
+            />
+
+            <Select
               onChange={(option) => {
                 dispatch({
                   type: SET_TRIP_DATA,
                   payload: {
                     ...state.tripData,
-                    people: option.label,
+                    species: option.label,
                   },
                 });
               }}
-            />
-
-            <label className="mb-2">Departure planet</label>
-            <Select
-              className="mb-8"
-              defaultValue={getOptions(state.data.planet)[0]}
-              options={state.data.planet.map((item) => ({
-                label: item.name,
-                value: item.url,
-              }))}
-            />
-
-            <label className="mb-2">Destination planet</label>
-            <Select
-              className="mb-8"
-              defaultValue={getOptions(state.data.planet)[0]}
-              options={state.data.planet.map((item) => ({
-                label: item.name,
-                value: item.url,
-              }))}
-            />
-
-            <Select
               className="mb-8"
               defaultValue={getOptions(state.data.species)[0]}
               options={getOptions(state.data.species)}
             />
-
-            <button
-              onClick={() => {}}
+            {/* <button
               className={`text-xl text-white bg-blue-600 w-full rounded whitespace-nowrap py-2`}
             >
               Confirm
-            </button>
-
-            {/* People */}
-            {/* <Select />
-          <Select /> */}
+            </button> */}
           </div>
         </div>
       )}
-      {/* <Select /> */}
+      <div className="text-center mt-10 border "></div>
     </div>
   );
 }
