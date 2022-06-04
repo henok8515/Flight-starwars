@@ -25,7 +25,6 @@ export const reducer = (state, action) => {
       return {
         ...state,
         toogle: payload,
-        default: false,
       };
     default:
       throw new Error(`Unhandled action type: ${type}`);

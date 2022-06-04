@@ -1,10 +1,14 @@
 import React from "react";
 import BookTrip from "./screens/BookTrip/index";
+import { Routes, Route, BrowserRouter } from "react-router-dom";
+
 function App() {
   return (
-    <div>
-      <BookTrip />
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route element={<BookTrip />} path="/" />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

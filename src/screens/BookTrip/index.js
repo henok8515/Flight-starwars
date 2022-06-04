@@ -1,12 +1,20 @@
+/* eslint-disable no-label-var */
 import React, { useReducer, useEffect } from "react";
 import axios from "axios";
 import Select from "react-select";
-import { reducer, LOADING_STATE, SET_DATA, SET_TRIP_DATA } from "./reducer";
-
+import {
+  reducer,
+  LOADING_STATE,
+  SET_DATA,
+  SET_TRIP_DATA,
+  DISPLAY_SUMMURY,
+} from "./reducer";
+import { getCurrentDate } from "./utilitis";
 const initialState = {
   data: undefined,
   loadingState: "loading",
   tripData: {},
+  toogle: false,
 };
 const getOptions = (arr) => {
   const options = arr.map((item) => ({
@@ -23,7 +31,6 @@ function BookTrip() {
   useEffect(() => {
     fetchData();
   }, []);
-
   const fetchData = async () => {
     try {
       dispatch({
@@ -72,7 +79,7 @@ function BookTrip() {
       },
     });
   };
-  console.log(state.tripData);
+
   return (
     <div>
       <h1 className="text-center mb-8 mt-6 text-2xl">Book trip</h1>
@@ -85,34 +92,41 @@ function BookTrip() {
       {state.loadingState === "success" && (
         <div className="flex justify-center w-full">
           <div className=" w-full max-w-[600px]">
+            <label>Date</label>
+            <input type="date" />
             <label className="mb-2">User</label>
             <Select
               className="mb-8"
               defaultValue={getOptions(state.data.people)[0]}
               options={getOptions(state.data.people)}
               onChange={(option) => handelChange(option, "people")}
-              value={getOptions(state.data.people).find(
-                (item) => item.label === state.data.tripData?.people
-              )}
             />
-
             <label className="mb-2">Departure planet</label>
             <Select
               onChange={(option) => handelChange(option, "planet")}
               className="mb-8"
-              defaultValue={getOptions(state.data?.planet)[0]}
+              defaultValue={getOptions(state.data.planet)[0]}
               options={state.data.planet.map((item) => ({
                 label: item.name,
                 value: item.url,
+                img: item.url,
               }))}
-              value={getOptions(state.data.planet).find(
-                (itme) => itme.label === state.tripData.planet
-              )}
             />
+
+            {state.data.planet.map((item) => {
+              return (
+                <img
+                  key={item.name}
+                  className="h-10 w-8"
+                  alt=""
+                  src={item.url}
+                />
+              );
+            })}
 
             <label className="mb-2">Destination planet</label>
             <Select
-              onChange={(option) => handelChange()}
+              onChange={(option) => handelChange(option, "destination")}
               className="mb-8"
               defaultValue={getOptions(state.data.desPlanet)[0]}
               options={state.data.desPlanet.map((item) => ({
@@ -120,7 +134,7 @@ function BookTrip() {
                 value: item.url,
               }))}
             />
-
+            <label className="mb-2">Species</label>
             <Select
               onChange={(option) => {
                 dispatch({
@@ -135,15 +149,35 @@ function BookTrip() {
               defaultValue={getOptions(state.data.species)[0]}
               options={getOptions(state.data.species)}
             />
-            {/* <button
+            <button
+              onClick={() =>
+                dispatch({
+                  type: DISPLAY_SUMMURY,
+                  payload: {
+                    ...state,
+                    toogle: true,
+                  },
+                })
+              }
               className={`text-xl text-white bg-blue-600 w-full rounded whitespace-nowrap py-2`}
             >
               Confirm
-            </button> */}
+            </button>
           </div>
         </div>
       )}
-      <div className="text-center mt-10 border "></div>
+
+      {state.toogle && (
+        <div className="text-center mt-10 border ">
+          <h1 className="tex">Summary</h1>
+          <p>Date : {getCurrentDate()}</p>
+          <h1> People : {state.tripData.people}</h1>
+          <h1>Departure: {state.tripData.planet}</h1>
+          <h1>Destination: {state.tripData.destination}</h1>
+          <h1>Species :{state.tripData.species}</h1>
+          {/* <p> {state.tripData.planet.created}</p> */}
+        </div>
+      )}
     </div>
   );
 }
